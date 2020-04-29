@@ -23,7 +23,7 @@ twitter_username: rokhrzic
 github_username:  rhrzic
 header_pages:
   - bio.md
-  #- blog.md
+  - blog.md
   - publications.md
   - teaching.md
 
