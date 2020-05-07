@@ -2,7 +2,6 @@
 layout: post
 title:  "Mortality convergence and parallelism of life expectancy trends in Europe"
 date:   2020-04-29
-categories: mortality-convergence theory
 ---
 
 In an [editorial in the IJE](https://academic.oup.com/ije/article/40/2/271/735545), David Leon examined life expectancy trends in Europe over the last half century, focusing on the differences between Western and Eastern European countries. Towards the end of the piece, he raises a question that I find particularly interesting: Why have Eastern and Western European life expectancy trends been (mostly) running in parallel since 1990?
