@@ -14,7 +14,7 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 title: Rok Hrzic
-email: rok.hrzic@maastrichtuniversity.nl
+email: r.hrzic@maastrichtuniversity.nl
 description: >- # this means to ignore newlines until "baseurl:"
   Rok Hrzic is a physician-epidemiologist at Maastricht University, working on structural determinants of mortality in the European Union.
 baseurl: "" # the subpath of your site, e.g. /blog
