@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Cards PWA (subpath: /cards-pwa)</title>
+<meta name="theme-color" content="#0f1216" />
+<link rel="manifest" href="/cards-pwa/manifest.webmanifest" />
+<link rel="icon" sizes="192x192" href="/cards-pwa/icon-192.png" />
+<link rel="apple-touch-icon" href="/cards-pwa/apple-touch-icon-180.png" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+  :root { --bg:#0f1216; --panel:#171a21; --line:#2b2f36; --muted:#aab2bf; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:#e8eaed; font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; }
+  header { padding:10px 16px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center; gap:10px; }
+  h1 { margin:0; font-size:16px; }
+  #diag { font-size:12px; color:#aab2bf; }
+  main { max-width: 980px; margin: 0 auto; padding: 12px; display:grid; gap:12px; grid-template-columns:1fr; }
+  @media(min-width:960px){ main { grid-template-columns: 1fr 1fr; } }
+  .panel { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:12px; }
+  label { color:var(--muted); font-size:13px; }
+  .row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+  input, select { background:#0d1117; border:1px solid var(--line); color:#e8eaed; border-radius:10px; padding:8px; }
+  button { background:#2d3543; color:#fff; border:1px solid #3b4252; padding:10px 14px; border-radius:10px; cursor:pointer; font-weight:600; }
+  button:hover { background:#394257; }
+  button:disabled { opacity:.5; cursor:not-allowed; }
+  .drop { border:2px dashed #3b4252; border-radius:12px; padding:18px; text-align:center; background:#111318; cursor:pointer; }
+  .drop.drag { background:#151922; border-color:#7aa2f7; }
+  .stack { min-height: 360px; display:flex; align-items:center; justify-content:center; background:#111318; border:1px dashed #3b4252; border-radius:12px; position:relative; overflow:hidden; }
+  .card-img { max-width:100%; max-height:340px; border-radius:10px; box-shadow:0 8px 30px rgba(0,0,0,.35); object-fit:contain; }
+  .pill { position:absolute; top:10px; left:10px; background:#1f2837; border:1px solid #3b4252; padding:6px 10px; border-radius:999px; font-size:12px; }
+  .thumbs { display:grid; grid-template-columns:repeat(auto-fill,minmax(54px,1fr)); gap:6px; max-height: 140px; overflow:auto; border:1px dashed #3b4252; border-radius:10px; padding:6px; background:#111318; }
+  .thumbs img { height:54px; width:100%; object-fit:cover; border-radius:8px; }
+  @media(max-width:740px){
+    main { grid-template-columns:1fr; }
+    .controls { position: sticky; bottom: env(safe-area-inset-bottom); background: rgba(15,18,22,.9); backdrop-filter: blur(6px); padding:10px; border-radius:12px; z-index:5; display:flex; flex-wrap:wrap; gap:8px; }
+    .controls button { flex: 1 1 auto; min-height: 44px; }
+    .controls .status { flex:1 1 100%; text-align:center; padding:8px; background:#0d1117; border:1px solid var(--line); border-radius:10px; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Cards PWA — subpath build</h1>
+  <div id="diag">SW: <span id="swState">…</span> • Mode: <span id="mode">…</span></div>
+</header>
+
+<main>
+  <section class="panel">
+    <div class="row">
+      <label>Deck: <select id="deckSelect"></select></label>
+      <input id="deckName" type="text" placeholder="New deck name" />
+      <button id="addDeck">Add deck</button>
+      <button id="delDeck">Delete deck</button>
+    </div>
+
+    <div id="drop" class="drop" aria-label="Drop PNG/JPEG files">
+      <strong>Drop PNG/JPEG files here</strong><br/>
+      <span class="hint">(or click to select)</span>
+      <input id="picker" type="file" accept="image/png,image/jpeg" multiple style="display:none" />
+    </div>
+
+    <div class="row" style="margin-top:8px">
+      <label><input id="showThumbs" type="checkbox" /> Show thumbnails</label>
+    </div>
+    <div id="thumbs" class="thumbs" style="display:none"></div>
+  </section>
+
+  <section class="panel">
+    <div class="controls">
+      <button id="draw" disabled>Draw</button>
+      <button id="save">Save decks</button>
+      <button id="load">Load saved</button>
+      <button id="clearAll">Delete ALL saved</button>
+      <span id="status" class="status">No deck loaded</span>
+    </div>
+    <div id="display" class="stack">
+      <span class="pill" id="pill">Waiting for images…</span>
+    </div>
+  </section>
+</main>
+
+<script type="module" src="/cards-pwa/app.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', async () => {
+      try {
+        const reg = await navigator.serviceWorker.register('/cards-pwa/service-worker.js', { scope: '/cards-pwa/' });
+        document.getElementById('swState').textContent = reg.active ? 'active' : (reg.installing ? 'installing' : 'registered');
+      } catch (e) {
+        document.getElementById('swState').textContent = 'failed';
+        console.error('SW register failed', e);
+      }
+    });
+  } else {
+    document.getElementById('swState').textContent = 'unsupported';
+  }
+  const inStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+  document.getElementById('mode').textContent = inStandalone ? 'standalone' : 'browser';
+</script>
+</body>
+</html>
