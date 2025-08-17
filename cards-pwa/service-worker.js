@@ -1,12 +1,14 @@
-// service-worker.js — cache-first for static assets
-const CACHE = 'cards-pwa-v1';
+// service-worker.js — cache-first for static assets (scoped to /cards-pwa/)
+const CACHE = 'cards-pwa-subpath-v1';
+const BASE = '/cards-pwa';
 const ASSETS = [
-  './',
-  './index.html',
-  './app.js',
-  './manifest.webmanifest',
-  './icon-192.png',
-  './icon-512.png'
+  BASE + '/',
+  BASE + '/index.html',
+  BASE + '/app.js',
+  BASE + '/manifest.webmanifest',
+  BASE + '/icon-192.png',
+  BASE + '/icon-512.png',
+  BASE + '/apple-touch-icon-180.png'
 ];
 
 self.addEventListener('install', (e) => {
@@ -30,7 +32,7 @@ self.addEventListener('fetch', (e) => {
     if (cached) return cached;
     try {
       const res = await fetch(req);
-      if (req.method === 'GET' && new URL(req.url).origin === self.location.origin){
+      if (req.method === 'GET' && new URL(req.url).origin === self.location.origin && new URL(req.url).pathname.startsWith(BASE)) {
         const c = await caches.open(CACHE);
         c.put(req, res.clone());
       }
