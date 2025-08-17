@@ -19,11 +19,9 @@ description: >- # this means to ignore newlines until "baseurl:"
   Rok Hrzic is a physician-epidemiologist at Maastricht University, working on structural determinants of mortality in the European Union.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://rokhrzic.eu"
-twitter_username: rokhrzic
 github_username:  rhrzic
 header_pages:
   - bio.md
-  - blog.md
   - publications.md
   - teaching.md
 
