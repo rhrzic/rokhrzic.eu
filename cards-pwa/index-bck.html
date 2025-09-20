@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>Cards PWA (front/back)</title>
+<title>Cards PWA (relative paths)</title>
 <meta name="theme-color" content="#0f1216" />
 <link rel="manifest" href="manifest.webmanifest" />
 <link rel="icon" sizes="192x192" href="icon-192.png" />
@@ -39,6 +39,7 @@
     .controls button { flex: 1 1 auto; min-height: 44px; }
     .controls .status { flex:1 1 100%; text-align:center; padding:8px; background:#0d1117; border:1px solid var(--line); border-radius:10px; }
   }
+  /* Toasts */
   #toast { position:fixed; left:0; right:0; bottom:16px; display:grid; justify-items:center; gap:8px; z-index:9999; pointer-events:none; }
   .toast { background:#1f2837; border:1px solid #3b4252; color:#e8eaed; padding:10px 14px; border-radius:999px; box-shadow:0 6px 24px rgba(0,0,0,.35); opacity:0; transform:translateY(10px); transition:.2s; }
   .toast.show { opacity:1; transform:translateY(0); }
@@ -49,7 +50,7 @@
 </head>
 <body>
 <header>
-  <h1>Cards PWA — fronts & backs</h1>
+  <h1>Cards PWA — relative paths</h1>
   <div id="diag">SW: <span id="swState">…</span> • Mode: <span id="mode">…</span></div>
 </header>
 
@@ -60,21 +61,6 @@
       <input id="deckName" type="text" placeholder="New deck name" />
       <button id="addDeck">Add deck</button>
       <button id="delDeck">Delete deck</button>
-    </div>
-
-    <div class="row">
-      <label>Deck type:
-        <select id="deckType">
-          <option value="fronts">Fronts only</option>
-          <option value="fronts_backs">Fronts + backs</option>
-        </select>
-      </label>
-      <label id="pairingWrap" style="display:none">Pairing mode:
-        <select id="pairingMode">
-          <option value="suffix">By filename suffix (_front/_back)</option>
-          <option value="alternate">Alternate order (F,B,F,B…)</option>
-        </select>
-      </label>
     </div>
 
     <div id="drop" class="drop" aria-label="Drop images">
@@ -92,7 +78,6 @@
   <section class="panel">
     <div class="controls">
       <button id="draw" disabled>Draw</button>
-      <button id="flip" disabled>Flip</button>
       <button id="save">Save decks</button>
       <button id="load">Load saved</button>
       <button id="clearAll">Delete ALL saved</button>
