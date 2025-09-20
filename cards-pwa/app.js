@@ -20,6 +20,9 @@ const els = {
   pill: document.getElementById('pill'),
   status: document.getElementById('status'),
   toast: document.getElementById('toast'),
+  toggleUpload: document.getElementById('toggleUpload'),
+  uploadPanel: document.getElementById('uploadPanel'),
+  uploadBody: document.getElementById('uploadBody'),
 };
 
 function toast(msg, kind='ok', ms=1800){
@@ -33,6 +36,20 @@ function toast(msg, kind='ok', ms=1800){
     setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=>t.remove(), 250); }, ms);
   }catch(e){ console.log('Toast:', msg); }
 }
+
+function setUploadCollapsed(collapsed) {
+  if (!els.uploadPanel || !els.toggleUpload) return;
+  els.uploadPanel.classList.toggle('collapsed', !!collapsed);
+  els.toggleUpload.textContent = collapsed ? 'Show' : 'Hide';
+  els.toggleUpload.setAttribute('aria-expanded', String(!collapsed));
+  try { localStorage.setItem('uploadCollapsed', collapsed ? '1' : '0'); } catch {}
+}
+(function initUploadCollapsed() {
+  if (els.uploadPanel && els.toggleUpload) {
+    const saved = (typeof localStorage !== 'undefined') && localStorage.getItem('uploadCollapsed') === '1';
+    setUploadCollapsed(saved);
+  }
+})();
 
 // IndexedDB (same store name; records now hold {front,back?})
 const DB_NAME = 'cards-pwa';
@@ -283,6 +300,16 @@ els.load.addEventListener('click', async ()=>{ const saved=await loadAll(); if(!
   toast('Loaded decks ✓','ok');
 });
 els.clearAll.addEventListener('click', async ()=>{ if(!confirm('Delete ALL saved decks from storage?')) return; const ok=await clearAllSaved(); toast(ok?'Deleted all saved ✓':'Delete failed', ok?'ok':'err'); });
+
+const savedCollapsed = (typeof localStorage !== 'undefined') && localStorage.getItem('uploadCollapsed') === '1';
+setUploadCollapsed(savedCollapsed);
+
+if (els.toggleUpload){
+  els.toggleUpload.addEventListener('click', () => {
+    const collapsed = !els.uploadPanel.classList.contains('collapsed');
+    setUploadCollapsed(collapsed);
+  });
+}
 
 // Init
 createDeck('Deck 1'); setActive('Deck 1'); renderUI();

@@ -45,6 +45,8 @@
   .toast.ok { border-color:#2ea043; }
   .toast.warn { border-color:#c69026; }
   .toast.err { border-color:#f85149; }
+  #uploadPanel.collapsed #uploadBody { display: none; }
+  #toggleUpload { min-height: 36px; padding: 6px 10px; }
 </style>
 </head>
 <body>
@@ -54,7 +56,7 @@
 </header>
 
 <main>
-  <section class="panel">
+  <!--<section class="panel">
     <div class="row">
       <label>Deck: <select id="deckSelect"></select></label>
       <input id="deckName" type="text" placeholder="New deck name" />
@@ -87,6 +89,48 @@
       <label><input id="showThumbs" type="checkbox" /> Show thumbnails</label>
     </div>
     <div id="thumbs" class="thumbs" style="display:none"></div>
+  </section>-->
+
+  <section class="panel" id="uploadPanel">
+  <div class="row" style="justify-content:space-between; align-items:center; margin-bottom:6px;">
+    <strong>Uploader</strong>
+    <button id="toggleUpload" type="button" aria-expanded="true" aria-controls="uploadBody">Hide</button>
+  </div>
+
+  <div id="uploadBody">
+    <div class="row">
+      <label>Deck: <select id="deckSelect"></select></label>
+      <input id="deckName" type="text" placeholder="New deck name" />
+      <button id="addDeck">Add deck</button>
+      <button id="delDeck">Delete deck</button>
+    </div>
+
+    <div class="row">
+      <label>Deck type:
+        <select id="deckType">
+          <option value="fronts">Fronts only</option>
+          <option value="fronts_backs">Fronts + backs</option>
+        </select>
+      </label>
+      <label id="pairingWrap" style="display:none">Pairing mode:
+        <select id="pairingMode">
+          <option value="suffix">By filename suffix (_front/_back)</option>
+          <option value="alternate">Alternate order (F,B,F,B…)</option>
+        </select>
+      </label>
+    </div>
+
+    <div id="drop" class="drop" aria-label="Drop images">
+      <strong>Drop PNG/JPEG files here</strong><br/>
+      <span class="hint">(or click to select)</span>
+      <input id="picker" type="file" accept="image/png,image/jpeg" multiple style="display:none" />
+    </div>
+
+    <div class="row" style="margin-top:8px">
+      <label><input id="showThumbs" type="checkbox" /> Show thumbnails</label>
+    </div>
+    <div id="thumbs" class="thumbs" style="display:none"></div>
+  </div>
   </section>
 
   <section class="panel">
